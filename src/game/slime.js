@@ -2,15 +2,16 @@ import { constant } from "lodash";
 import { constants } from "../constants/constants";
 
 export class Slime{
-    constructor(){
+    constructor(no){
         this.radius=constants.slime.radius;
-        this.x=constants.court.canvasWidth*0.75;
+        this.x= no==1 ? constants.court.canvasWidth*0.75 : constants.court.canvasWidth*0.25;
         this.y=0;
         this.vX=0;
         this.vY=0;
         this.aX=0;
         this.aY=constants.slime.gravity;
         this.jump=false;
+        this.isBallInMyCourt=true;
     }
 
     updatePosition(elapsed){

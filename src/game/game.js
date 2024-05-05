@@ -1,10 +1,12 @@
 import {Slime} from './slime';
+import {OtherSlime} from './otherSlime';
 import {Ball} from './ball';
 import { constants } from '../constants/constants';
 
 export class Game{
-    constructor(){
-        this.mySlime=new Slime();
+    constructor(mySlimeNo, otherSlimeNo){
+        this.mySlime=new Slime(mySlimeNo);
+        this.otherSlime=new OtherSlime(otherSlimeNo);
         this.ball=new Ball();
     }
 
@@ -69,25 +71,43 @@ export class Game{
     }
     updatePosition(){
 
-        this.detectCollision();
-        this.mySlime.updatePosition();
-        this.ball.updatePosition();
+        if(this.mySlime.isBallInMyCourt){
+            this.detectCollision();
+            this.mySlime.updatePosition();
+            this.otherSlime.updatePosition();
+            this.ball.updatePosition();
+            // if()
+        }
+
+        
 
 
     }
 
-    draw(ctx, elapsed){
-        // ctx.rotate
+    drawCourt(ctx, elapsed){
+        // draw the floor
         ctx.beginPath();
         ctx.moveTo(0,0);
         ctx.lineTo(constants.court.canvasWidth,0);
         ctx.strokeStyle = constants.court.floorColor;
         ctx.stroke();
 
-        
-        this.mySlime.draw(ctx, elapsed)
+        //draw the net
+        ctx.beginPath();
+        ctx.moveTo(constants.court.canvasWidth/2,0);
+        ctx.lineTo(constants.court.canvasWidth/2,-constants.court.netHeight);
+        ctx.strokeStyle = constants.court.netColor;
+        ctx.stroke();
+
+    }
+
+    draw(ctx, elapsed){
+        // ctx.rotate
+        this.drawCourt(ctx, elapsed)
 
         
+        this.mySlime.draw(ctx, elapsed)
+        this.otherSlime.draw(ctx, elapsed)
         this.ball.draw(ctx, elapsed)
     }
 }

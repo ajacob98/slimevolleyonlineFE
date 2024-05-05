@@ -1,57 +1,32 @@
 import _ from 'lodash';
 import './style.css';
-import Icon from './icon.png';
-import { webSocket } from 'rxjs/webSocket';
-import {subscribe} from './service/wsEvents'
-import {constants} from './constants/constants'
-import {Game} from './game/game'
-import { handleSlimeMovement } from './inputHandler/slimeController';
-import { Keyboard } from './inputHandler/Keyboard';
+import { initGame } from './game/initGame';
+import { subscribe } from './service/wsEvents';
 
 
 window.addEventListener('load', ()=>{
     if(document.readyState == 'complete'){
-        console.log("load.......")
-        Keyboard.initialize()
-        const game=new Game();
 
-        var canvas = document.getElementById("canvas");
-        canvas.height=constants.court.canvasHeight;
-        canvas.width=constants.court.canvasWidth;
-        canvas.style.backgroundColor=constants.court.canvasBackgroundColor;
-        canvas.style.border=constants.court.canvasBorder;
-        canvas.style.borderColor=constants.court.canvasBorderColor;
+        
 
-        const ctx = document.getElementById("canvas").getContext("2d");
-        ctx.translate(0, constants.court.gameHeight);
-        ctx.globalCompositeOperation = "destination-over";
+        let mySlimeNo=1; //right
+        let otherSlimeNo=2; //left
 
-        var start = Date.now()
+        const gamePage=document.getElementById("game");
 
-        const draw = () => {
-            var currentTime=Date.now();
-            var elapsed=currentTime-start;
-            start=currentTime;
-            
-            
-            ctx.beginPath();
-            ctx.moveTo(0, -(constants.court.canvasHeight-100));
-            ctx.lineTo(constants.court.canvasWidth,100);
-            ctx.strokeStyle = constants.court.floorColor;
-            ctx.stroke();
-            ctx.clearRect(0, -(constants.court.canvasHeight-100), constants.court.canvasWidth, constants.court.canvasHeight); // clear canvas
-
-
-            handleSlimeMovement(game);
-            
-            game.updatePosition();
-            game.draw(ctx, elapsed);
-
-            // console.log(elapsed)
-            window.requestAnimationFrame(draw);
-            // setTimeout(draw, 250);
+        const hostButton=document.getElementById("host");
+        hostButton.onclick= ()=>{
+            initGame("host", mySlimeNo, otherSlimeNo)
         }
-        window.requestAnimationFrame(draw);
+
+        const joinButton=document.getElementById("join");
+        joinButton.onclick=()=>{
+            mySlimeNo=2;
+            otherSlimeNo=1;
+            initGame("join", mySlimeNo, otherSlimeNo)
+        }
+
+        
     
     }   
 })
