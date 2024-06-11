@@ -5,15 +5,17 @@ import {constants} from '../constants/constants'
 import {Game} from './game'
 import { handleSlimeMovement } from '../inputHandler/slimeController';
 import { Keyboard } from '../inputHandler/Keyboard';
+import { Config } from '../config/config';
 
-export const initGame = (type, mySlimeNo, otherSlimeNo)=>{
+export const initGame = (type, roomCode, mySlimeNo, otherSlimeNo)=>{
     console.log("load.......")
     
 
     Keyboard.initialize()
+    Config.initialize()
     const game=new Game(mySlimeNo, otherSlimeNo);
 
-    subscribe(type, game);
+    subscribe(type, roomCode, game);
 
     var canvas = document.getElementById("canvas");
     canvas.height=constants.court.canvasHeight;
@@ -33,13 +35,8 @@ export const initGame = (type, mySlimeNo, otherSlimeNo)=>{
         var elapsed=currentTime-start;
         start=currentTime;
         
-        
-        ctx.beginPath();
-        ctx.moveTo(0, -(constants.court.canvasHeight-100));
-        ctx.lineTo(constants.court.canvasWidth,100);
-        ctx.strokeStyle = constants.court.floorColor;
-        ctx.stroke();
-        ctx.clearRect(0, -(constants.court.canvasHeight-100), constants.court.canvasWidth, constants.court.canvasHeight); // clear canvas
+
+        ctx.clearRect(0, -(constants.court.gameHeight), constants.court.canvasWidth, constants.court.canvasHeight); // clear canvas
 
 
         handleSlimeMovement(game);
@@ -47,9 +44,8 @@ export const initGame = (type, mySlimeNo, otherSlimeNo)=>{
         game.updatePosition();
         game.draw(ctx, elapsed);
 
-        // console.log(elapsed)
-        window.requestAnimationFrame(draw);
-        // setTimeout(draw, 250);
+        // window.requestAnimationFrame(draw);
     }
-    window.requestAnimationFrame(draw);
+    // window.requestAnimationFrame(draw);
+    setInterval(draw, 28); 
 }

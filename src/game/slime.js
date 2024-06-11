@@ -3,6 +3,7 @@ import { constants } from "../constants/constants";
 
 export class Slime{
     constructor(no){
+        this.no=no
         this.radius=constants.slime.radius;
         this.x= no==1 ? constants.court.canvasWidth*0.75 : constants.court.canvasWidth*0.25;
         this.y=0;
@@ -11,10 +12,13 @@ export class Slime{
         this.aX=0;
         this.aY=constants.slime.gravity;
         this.jump=false;
-        this.isBallInMyCourt=true;
+        this.isBallInMyCourt= no==1 ? true : false;
+        this.disable=false;
     }
 
     updatePosition(elapsed){
+        if(this.disable)
+            return
         const t=0.5;
         const t2=0.25;
 
@@ -23,6 +27,27 @@ export class Slime{
         }
         this.x=this.x +  (this.vX * t + 0.5*this.aX*t2);
         this.vX=this.vX+ this.aX*t;
+
+        if(this.no==1){
+            if(this.x>=constants.court.canvasWidth-this.radius){
+                this.x=constants.court.canvasWidth-this.radius
+                this.vX=0
+            }
+            if(this.x<=constants.court.canvasWidth/2 + this.radius){
+                this.x=constants.court.canvasWidth/2 + this.radius
+                this.vX=0
+            }
+        }
+        else if(this.no==2){
+            if(this.x<this.radius){
+                this.x=this.radius
+                this.vX=0
+            }
+            if(this.x>=constants.court.canvasWidth/2 - this.radius){
+                this.x=constants.court.canvasWidth/2 - this.radius
+                this.vX=0
+            }
+        }
 
 
         if(this.jump==true){
